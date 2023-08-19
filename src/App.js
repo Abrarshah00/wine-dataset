@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import wineDataset from './Wine-Data.json';
+import { calculateClassWiseStatistics } from './utils/meanCalc';
+import Statisticstable from './tables/Statisticstable';
+import Gammatable from './tables/Gammatable';
 
 function App() {
+  const [statistics, setStatistics] = useState([]);
+  const [statisticsGamma, setStatisticsGamma] = useState([]);
+  const classLabels = Object.keys(statistics);
+  const gammaLabels = Object.keys(statisticsGamma);
+  const measures = ['Flavanoids'];
+  const gamma = ['Gamma'];
+
+  useEffect(() => {
+    const result = calculateClassWiseStatistics(wineDataset);
+    setStatistics(result);
+    const gammaStatistics = calculateClassWiseStatistics(wineDataset);
+    setStatisticsGamma(gammaStatistics);
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Statisticstable
+        measures={measures}
+        statistics={statistics}
+        classLabels={classLabels}
+      />
+      <Gammatable
+        gammaLabels={gammaLabels}
+        gamma={gamma}
+        statisticsGamma={statisticsGamma}
+      />
     </div>
   );
 }
 
 export default App;
+
